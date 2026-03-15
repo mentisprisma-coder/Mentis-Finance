@@ -8,7 +8,7 @@ const LEGACY_STORAGE_KEYS = [
 
 const CATEGORY_OPTIONS = {
   income: ["Salario", "Extra", "Reembolso", "Investimento", "Outros"],
-  expense: ["Casa", "Transporte", "Lazer", "Saude", "Outros"]
+  expense: ["Casa", "Transporte", "Compras", "Lazer", "Saude", "Outros"]
 };
 
 const initialState = {
@@ -779,6 +779,7 @@ function iconForCategory(category, type) {
     Investimento: "📈",
     Casa: "🏠",
     Transporte: "🚗",
+    Compras: "🛍️",
     Lazer: "🎮",
     Saude: "💊",
     Outros: "📦"
