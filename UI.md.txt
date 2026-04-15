@@ -1,0 +1,191 @@
+# Mentis Finance - Interface
+
+Define como a interface deve funcionar.
+
+Evita confusão e mantém consistência.
+
+---
+
+# Filosofia
+
+A app deve ser:
+
+- simples
+- rápida
+- clara
+- sem fricção
+
+Evitar:
+- cliques desnecessários
+- menus complicados
+- decisões desnecessárias
+
+---
+
+# Navegação Principal
+
+Tabs:
+
+- Home
+- Adicionar
+- Histórico
+- Definições
+
+⚠️ Não adicionar mais tabs sem necessidade.
+
+---
+
+# Header Principal
+
+Contém:
+
+- nome da app
+- mês atual
+- data de hoje
+- botão tema
+- resumo:
+  - entradas
+  - saídas
+  - saldo
+
+---
+
+# Ecrãs
+
+## Home
+
+Objetivo:
+- ver o estado do mês atual
+
+Contém:
+- categorias
+- gráfico
+- últimos movimentos
+
+---
+
+## Adicionar
+
+Objetivo:
+- criar ou editar movimento
+
+Contém:
+- tipo (entrada/saída)
+- formulário
+
+Regras:
+- criar e editar no mesmo ecrã
+- edição deve ser clara
+
+---
+
+## Histórico
+
+Objetivo:
+- ver meses anteriores
+
+Contém:
+- lista de meses
+
+---
+
+## Definições
+
+Objetivo:
+- controlo da app
+
+Contém:
+- exportar
+- importar
+- apagar dados
+
+---
+
+## Detalhe do mês
+
+Objetivo:
+- analisar um mês
+
+Contém:
+- resumo
+- categorias
+- movimentos
+
+---
+
+## Detalhe da categoria
+
+Objetivo:
+- ver movimentos filtrados
+
+Regras:
+- fácil de fechar
+- não é ecrã principal
+
+---
+
+# Formulário
+
+Campos:
+
+- valor
+- descrição
+- categoria
+- data
+
+Regras:
+- rápido de preencher
+- claro
+- sem campos desnecessários
+
+---
+
+# Lista de Movimentos
+
+Cada item deve mostrar:
+
+- tipo
+- valor
+- categoria
+- data
+
+Regras:
+- fácil de ler
+- distinguir entrada vs saída
+
+---
+
+# Estados Vazios
+
+Se não houver dados:
+
+- explicar claramente
+- orientar o utilizador
+
+---
+
+# Fricção
+
+O utilizador prefere:
+
+- menos cliques
+- acesso direto
+- rapidez
+
+---
+
+# Mobile First
+
+Priorizar:
+
+- conforto ao toque
+- leitura fácil
+- navegação simples
+
+---
+
+# Regra
+
+Cada ecrã tem um propósito.
+
+Não misturar funcionalidades.

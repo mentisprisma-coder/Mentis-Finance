@@ -72,6 +72,20 @@ select {
   margin-bottom: 18px;
 }
 
+.compact-header .hero {
+  padding: 18px 22px;
+  margin-bottom: 14px;
+}
+
+.compact-header .stats-grid-phase1 {
+  display: none;
+}
+
+.compact-header .hero p,
+.compact-header .hero-date {
+  margin-top: 6px;
+}
+
 .hero-top,
 .section-head,
 .toggle-row,
@@ -201,6 +215,19 @@ p {
   margin-top: 16px;
 }
 
+.expense-chart-block {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+
+.expense-chart-canvas {
+  display: block;
+  width: min(100%, 320px);
+  height: auto;
+  margin: 16px auto 0;
+}
+
 .category-card,
 .history-card {
   width: 100%;
@@ -310,14 +337,6 @@ p {
   font-size: 1.4rem;
 }
 
-.amount.income{
-  color:#22c55e;
-}
-
-.amount.expense{
-  color:#ef4444;
-}
-
 .tx-actions {
   display: flex;
   justify-content: flex-end;
@@ -423,15 +442,6 @@ p {
   opacity:0.6;
 }
 
-.settings-info small{
-  display:block;
-  margin-top:6px;
-}
-
-.home-chart-block{
-  margin-top:18px;
-}
-
 .primary-btn,
 .ghost-btn {
   padding: 16px 18px;
@@ -506,56 +516,6 @@ p {
   color: var(--text);
 }
 
-#categoryChart{
-  width:100%;
-  max-height:320px;
-  margin-top:16px;
-}
-
-#toast{
-  position:fixed;
-  bottom:80px;
-  left:50%;
-  transform:translateX(-50%);
-  background:#0a1f44;
-  color:white;
-  padding:10px 16px;
-  border-radius:8px;
-  opacity:0;
-  transition:opacity .3s;
-  z-index:30;
-  pointer-events:none;
-}
-
-#toast.show{
-  opacity:1;
-}
-
-.update-notice{
-  position:fixed;
-  top:18px;
-  left:50%;
-  transform:translateX(-50%);
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:12px 14px;
-  border-radius:14px;
-  background:rgba(10, 31, 68, 0.96);
-  border:1px solid var(--line);
-  box-shadow:var(--shadow);
-  z-index:31;
-}
-
-.update-notice button{
-  border:0;
-  border-radius:10px;
-  padding:8px 12px;
-  cursor:pointer;
-  background:linear-gradient(90deg, rgba(47, 226, 124, 0.24), rgba(52, 216, 197, 0.26));
-  color:var(--text);
-}
-
 .hidden {
   display: none !important;
 }
@@ -615,3 +575,5 @@ p {
     font-size: 0.85rem;
   }
 }
+
+

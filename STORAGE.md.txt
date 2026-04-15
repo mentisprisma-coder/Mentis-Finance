@@ -1,0 +1,160 @@
+# Mentis Finance - Armazenamento
+
+Este documento explica como os dados são guardados e como devem ser tratados.
+
+Serve para evitar perda de dados.
+
+Qualquer agente de código deve ler isto antes de mexer no storage.
+
+---
+
+# Sistema de Armazenamento
+
+A app guarda todos os dados localmente no dispositivo do utilizador.
+
+Método principal:
+
+- localStorage
+
+Não existe servidor nem cloud.
+
+---
+
+# Chaves de Storage
+
+Chaves atuais:
+
+- mentis_finance_data
+- mentis-finance-theme
+
+Chaves antigas (compatibilidade):
+
+- mentis-finance-phase1-v1
+- mentis-finance-premium-v1
+
+⚠️ Estas chaves NÃO devem ser alteradas sem migração.
+
+---
+
+# Estrutura dos Dados
+
+Objeto principal:
+
+- version
+- transactions
+- categories
+
+Versão atual:
+
+- 1
+
+---
+
+# Estrutura de Transação
+
+Cada transação contém:
+
+- id
+- type (income ou expense)
+- amount
+- category
+- description
+- date
+
+Regras:
+
+- id nunca muda
+- amount > 0
+- type válido (income/expense)
+- date em formato ISO
+- description pode estar vazia
+
+---
+
+# Categorias
+
+Existem:
+
+1. categorias base (fixas)
+2. categorias geradas a partir dos dados
+
+Regras:
+
+- categorias usadas nunca podem desaparecer
+- não perder categorias em updates
+- manter compatibilidade com backups antigos
+
+---
+
+# Compatibilidade
+
+Qualquer alteração deve preservar:
+
+- dados existentes
+- categorias
+- backups
+- preferências (tema)
+
+Se mudares estrutura → tens de criar migração automática.
+
+---
+
+# Migração
+
+Regras:
+
+- dados antigos devem continuar a funcionar
+- não duplicar transações
+- não perder categorias
+- guardar nova versão corretamente
+
+---
+
+# Backup
+
+A app permite:
+
+- exportar dados
+- importar dados
+
+Regras:
+
+Exportar:
+- incluir todos os dados
+- ficheiro JSON válido
+
+Importar:
+- validar ficheiro
+- falhar de forma segura
+- suportar versões antigas quando possível
+
+---
+
+# Reset
+
+Existe opção de apagar tudo.
+
+Regras:
+
+- pedir confirmação
+- nunca apagar automaticamente
+- apagar apenas os dados da app
+
+---
+
+# Tema
+
+Guardado separadamente.
+
+Regras:
+
+- não misturar com dados financeiros
+- não afetar transações
+
+---
+
+# Regra Crítica
+
+Os dados financeiros do utilizador NUNCA podem ser perdidos.
+
+Qualquer alteração ao storage é considerada de alto risco.

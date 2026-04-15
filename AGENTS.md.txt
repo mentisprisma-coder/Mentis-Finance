@@ -1,0 +1,107 @@
+# Mentis Finance - Regras para Agentes
+
+Define como a app deve ser modificada.
+
+Evita erros e perda de dados.
+
+---
+
+# Prioridades
+
+1. Estabilidade > novas funcionalidades
+2. Dados > código bonito
+3. Simplicidade > complexidade
+4. Mobile > desktop
+
+---
+
+# Regra Crítica
+
+NUNCA perder dados do utilizador.
+
+---
+
+# Storage
+
+- não mudar chaves sem migração
+- não apagar dados existentes
+- manter compatibilidade com backups
+
+---
+
+# Lógica Financeira
+
+Alterações em:
+
+- saldo
+- entradas
+- saídas
+- histórico
+
+são de alto risco.
+
+Devem ser bem justificadas.
+
+---
+
+# Interface
+
+Manter:
+
+- navegação simples
+- estrutura dos ecrãs
+
+Não complicar UI.
+
+---
+
+# Backup
+
+Tem de continuar a funcionar:
+
+- exportar
+- importar
+
+---
+
+# Reset
+
+- pedir confirmação
+- nunca automático
+
+---
+
+# PWA
+
+Não quebrar:
+
+- offline
+- install
+- service worker
+
+---
+
+# Alterações
+
+Preferir:
+
+- pequenas mudanças
+- mudanças seguras
+
+Evitar:
+
+- reescrever tudo
+
+---
+
+# Processo
+
+Antes de alterar:
+
+1. ver impacto nos dados
+2. ver impacto na UI
+
+Depois:
+
+- explicar mudanças
+- indicar riscos

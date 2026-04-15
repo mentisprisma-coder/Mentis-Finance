@@ -1,0 +1,107 @@
+# Mentis Finance - Arquitetura
+
+Explica como a app está organizada.
+
+---
+
+# Estrutura
+
+A app usa:
+
+- index.html
+- styles.css
+- script.js
+- manifest.json
+- sw.js
+
+---
+
+# Filosofia
+
+- simples
+- leve
+- fácil de manter
+
+---
+
+# Ficheiros
+
+## index.html
+
+- estrutura da app
+- ecrãs
+- navegação
+
+---
+
+## styles.css
+
+- design
+- layout
+- cores
+
+---
+
+## script.js
+
+- lógica
+- storage
+- render
+- eventos
+
+---
+
+## manifest.json
+
+- dados da PWA
+
+---
+
+## sw.js
+
+- cache
+- offline
+
+---
+
+# Áreas Principais
+
+## Render
+
+- mostrar dados
+- atualizar UI
+
+## Interação
+
+- cliques
+- navegação
+- formulários
+
+## Dados
+
+- guardar
+- carregar
+- migrar
+
+## PWA
+
+- offline
+- instalação
+
+---
+
+# Alterações
+
+Antes de alterar:
+
+1. é necessário?
+2. há forma mais simples?
+3. pode quebrar dados?
+
+---
+
+# Regra
+
+Evitar grandes mudanças.
+
+Preferir evolução gradual.

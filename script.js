@@ -8,7 +8,7 @@ const LEGACY_STORAGE_KEYS = [
 
 const CATEGORY_OPTIONS = {
   income: ["Salario", "Extra", "Reembolso", "Investimento", "Outros"],
-  expense: ["Casa", "Transporte", "Compras", "Lazer", "Saude", "Outros"]
+  expense: ["Casa", "Transporte", "Lazer", "Saude", "Compras", "Outros"]
 };
 
 const initialState = {
@@ -25,7 +25,6 @@ let state = {
   transactions: loadedData.transactions,
   categories: loadedData.categories
 };
-let categoryChart = null;
 
 const refs = {
   currentMonthLabel: document.getElementById("currentMonthLabel"),
@@ -35,7 +34,8 @@ const refs = {
   balanceValue: document.getElementById("balanceValue"),
   currentMonthMovements: document.getElementById("currentMonthMovements"),
   categoryList: document.getElementById("categoryList"),
-  categoryChart: document.getElementById("categoryChart"),
+  expenseChartSection: document.getElementById("expenseChartSection"),
+  expenseChartCanvas: document.getElementById("expenseChartCanvas"),
   recentTransactionList: document.getElementById("recentTransactionList"),
   transactionForm: document.getElementById("transactionForm"),
   amountInput: document.getElementById("amountInput"),
@@ -51,7 +51,6 @@ const refs = {
   importDataBtn: document.getElementById("importDataBtn"),
   importDataInput: document.getElementById("importDataInput"),
   resetDataBtn: document.getElementById("resetDataBtn"),
-  toast: document.getElementById("toast"),
   detailMonthTitle: document.getElementById("detailMonthTitle"),
   detailStats: document.getElementById("detailStats"),
   detailCategoryList: document.getElementById("detailCategoryList"),
@@ -222,7 +221,7 @@ function render() {
   updateTypeButtons();
   populateCategorySelect();
   renderHomeCategories(currentMonthTransactions);
-  renderCategoryChart(currentMonthTransactions);
+  renderExpenseChart(currentMonthTransactions);
   renderRecentTransactions(currentMonthTransactions);
   renderHistory();
   renderMonthDetail();
@@ -244,7 +243,9 @@ function openView(view) {
 
 function updateVisibleSections() {
   const isDetail = state.activeView === "detail";
+  const useCompactHeader = state.activeView !== "home";
 
+  document.body.classList.toggle("compact-header", useCompactHeader);
   refs.homeSection.classList.toggle("hidden", state.activeView !== "home");
   refs.recentSection.classList.toggle("hidden", state.activeView !== "home");
   Object.entries(views).forEach(([viewName, section]) => {
@@ -316,7 +317,6 @@ function submitTransactionForm() {
   state.categories = mergeCategories([payload.category], state.categories);
   saveData();
   resetForm();
-  showToast("Movimento adicionado");
   openView("home");
 }
 
@@ -373,7 +373,7 @@ function deleteTransaction(id) {
 }
 
 function exportBackup() {
-  const payload = localStorage.getItem(STORAGE_KEY) || "{}";
+  const payload = JSON.stringify(getPersistedData(), null, 2);
   const blob = new Blob([payload], { type: "application/json" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -451,6 +451,58 @@ function renderRecentTransactions(transactions) {
     "Ainda nao ha movimentos neste mes.|Adicione a primeira entrada ou saida."
   );
   bindTransactionActions(refs.recentTransactionList);
+}
+
+function renderExpenseChart(transactions) {
+  const canvas = refs.expenseChartCanvas;
+  const section = refs.expenseChartSection;
+  if (!canvas || !section) return;
+
+  const categories = getExpenseCategories(transactions);
+  const context = canvas.getContext("2d");
+  context.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (!categories.length) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+
+  const total = categories.reduce((sum, item) => sum + item.total, 0);
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const radius = 170;
+  const lineWidth = 64;
+  const colors = getExpenseChartColors();
+
+  let startAngle = -Math.PI / 2;
+
+  categories.forEach((item, index) => {
+    const sliceAngle = total > 0 ? (item.total / total) * Math.PI * 2 : 0;
+    context.beginPath();
+    context.arc(centerX, centerY, radius, startAngle, startAngle + sliceAngle);
+    context.strokeStyle = colors[index % colors.length];
+    context.lineWidth = lineWidth;
+    context.lineCap = "butt";
+    context.stroke();
+    startAngle += sliceAngle;
+  });
+
+  context.beginPath();
+  context.fillStyle = getComputedStyle(document.body).getPropertyValue("--panel-2").trim() || "rgba(3, 27, 72, 0.9)";
+  context.arc(centerX, centerY, 92, 0, Math.PI * 2);
+  context.fill();
+
+  context.fillStyle = getComputedStyle(document.body).getPropertyValue("--text").trim() || "#f4f8ff";
+  context.font = "700 30px 'Segoe UI', Arial, sans-serif";
+  context.textAlign = "center";
+  context.textBaseline = "middle";
+  context.fillText(formatCurrency(total), centerX, centerY - 12);
+
+  context.fillStyle = getComputedStyle(document.body).getPropertyValue("--muted").trim() || "#b6c8ea";
+  context.font = "18px 'Segoe UI', Arial, sans-serif";
+  context.fillText("Saidas do mes", centerX, centerY + 26);
 }
 
 function renderHistory() {
@@ -596,7 +648,7 @@ function renderTransactionListMarkup(transactions, emptyMessage) {
         </div>
       </div>
       <div class="tx-value">
-        <strong class="amount ${item.type}">${signedCurrency(item)}</strong>
+        <strong>${signedCurrency(item)}</strong>
         <div class="tx-actions">
           <button type="button" data-edit="${item.id}">Editar</button>
           <button type="button" data-remove="${item.id}">Apagar</button>
@@ -632,6 +684,18 @@ function getExpenseCategories(transactions) {
       total,
       percent: expenseTotal > 0 ? Math.round((total / expenseTotal) * 100) : 0
     }));
+}
+
+function getExpenseChartColors() {
+  return [
+    "#34d8c5",
+    "#2fe27c",
+    "#6fb4ff",
+    "#8f7dff",
+    "#ff8aa1",
+    "#ffd166",
+    "#7ee081"
+  ];
 }
 
 function getSummary(transactions) {
@@ -689,7 +753,7 @@ function normalizeTransactionsArray(transactions) {
       id: item.id || crypto.randomUUID(),
       type: item.type === "income" ? "income" : "expense",
       amount: Number(item.amount) > 0 ? Number(item.amount) : 0,
-      category: normalizeCategory(item.category),
+      category: typeof item.category === "string" && item.category.trim() ? item.category.trim() : "Outros",
       description: typeof item.description === "string" ? item.description : "",
       date: toIsoDate(item.date || new Date())
     }))
@@ -700,7 +764,7 @@ function normalizeCategories(categories) {
   if (!Array.isArray(categories)) return [];
   return [...new Set(categories
     .filter(item => typeof item === "string")
-    .map(item => normalizeCategory(item))
+    .map(item => item.trim())
     .filter(Boolean))];
 }
 
@@ -778,86 +842,14 @@ function iconForCategory(category, type) {
     Reembolso: "↩️",
     Investimento: "📈",
     Casa: "🏠",
+    Alimentacao: "🛒",
     Transporte: "🚗",
-    Compras: "🛍️",
     Lazer: "🎮",
     Saude: "💊",
+    Compras: "🛍️",
     Outros: "📦"
   };
   return map[category] || (type === "income" ? "💸" : "🧾");
-}
-
-function normalizeCategory(category) {
-  const normalized = typeof category === "string" ? category.trim() : "";
-  if (!normalized) return "Outros";
-  if (normalized === "Alimentacao" || normalized === "Alimentação") return "Outros";
-  return normalized;
-}
-
-function renderCategoryChart(transactions) {
-  const categoryTotals = {};
-
-  transactions.forEach(transaction => {
-    if (transaction.type === "expense") {
-      categoryTotals[transaction.category] = (categoryTotals[transaction.category] || 0) + Number(transaction.amount);
-    }
-  });
-
-  const labels = Object.keys(categoryTotals);
-  const values = Object.values(categoryTotals);
-  const ctx = refs.categoryChart;
-
-  if (!ctx || typeof Chart === "undefined") return;
-
-  if (categoryChart) {
-    categoryChart.destroy();
-    categoryChart = null;
-  }
-
-  if (!labels.length) {
-    return;
-  }
-
-  categoryChart = new Chart(ctx, {
-    type: "pie",
-    data: {
-      labels,
-      datasets: [{
-        data: values,
-        backgroundColor: [
-          "#315b9a",
-          "#4c7bd9",
-          "#7a5c8f",
-          "#456f83",
-          "#64748b"
-        ],
-        borderColor: "rgba(255, 255, 255, 0.08)",
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "bottom",
-          labels: {
-            color: "#b6c8ea"
-          }
-        }
-      }
-    }
-  });
-}
-
-function showToast(message){
-  const toast = refs.toast;
-  if (!toast) return;
-  toast.textContent = message;
-  toast.classList.add("show");
-
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 2000);
 }
 
 function escapeHtml(text) {
@@ -877,3 +869,4 @@ function toggleTheme() {
   localStorage.setItem(THEME_KEY, nextTheme);
   applyTheme();
 }
+
